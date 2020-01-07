@@ -16,5 +16,7 @@ import Graphics.Vty
 
 
 -- | Raster Style Ascii art
-newtype Raster = Vector (Char, Attr)
+data Raster = Raster { displayText :: Vector (Char, Attr) -- ^ Vector of data
+                     , width       :: Int -- ^ Width of the ASCII art
+                     }
 
