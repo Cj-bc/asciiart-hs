@@ -12,9 +12,12 @@ module Graphics.Asciiart.Type
   Coord
   -- * Classes
 , ToImage(..)
+, ToWidget(..)
 ) where
 
 import Graphics.Vty.Image (Image)
+import Brick.Types (Widget)
+import Brick.Widgets.Core (raw)
 -- | Represent Coordinate
 type Coord = ( Int -- ^ X
              , Int -- ^ Y
@@ -27,3 +30,8 @@ class ToImage a where
 
 
 
+-- | Convert to 'Brick.Types.Widget'
+class ToImage a => ToWidget a where
+    -- | Convert to 'Brick.Types.Widget'
+    toWidget :: a -> Widget n
+    toWidget = raw . toImage
