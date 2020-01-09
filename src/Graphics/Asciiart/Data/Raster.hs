@@ -9,14 +9,16 @@ Raster Data format is:
 
 @
 Asciiart Raster data
-<Char><separator><Attr>;...
-<Char><separator><Attr>;...
+\<Char>\<separator>\<Attr>;...
+\<Char>\<separator>\<Attr>;...
 ...
 @
 
 where '<char>' is one character to show and
+
 '<Attr>' is the attributes to apply (e.g. background color,
 foreground color, bold, italic, etc.)
+
 '<separator>' is one character.
 It'll just ignored.
 
