@@ -50,6 +50,9 @@ class IsAsciiart a where
     -- render :: a -> [String]
     -- render = undefined
 
+    -- | Render without attributes
+    renderMono :: a -> [String]
+
     -- | Generate Asciiart data from Plain Text
     --
     -- To generate Asciiart data from Plain-text-ASCIIart
