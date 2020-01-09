@@ -43,11 +43,12 @@ class IsAsciiart a where
     -- Use 'render' to generate human-readable output.
     toData :: a -> [String]
 
-    -- | Render to actual letters
+    -- | Render to actual letters -- __for future__
     --
     -- This will generate human-readable output.
     -- To save Asciiart data as is, please use 'toData' instead.
-    render :: a -> [String]
+    -- render :: a -> [String]
+    -- render = undefined
 
     -- | Generate Asciiart data from Plain Text
     --
