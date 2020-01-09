@@ -61,6 +61,23 @@ instance IsAsciiart Raster where
                              | otherwise = let (h:t) = splitAtChar c xs
                                            in (x : h) : t
 
+    toData (Raster txt w) = "Asciiart Raster data" : map encodeRow rows
+      where
+          rows = chunksOf w (V.toList txt)
+          encodeRow = mconcat . map encodePair
+          encodePair (c, attr) = c : ',' : show attr ++ ";"
+
+    renderMono (Raster txt w) = map (map pickChar) rows
+        where
+            rows = chunksOf w (V.toList txt)
+            pickChar (c, _) = c
+
+    generateFrom rows = Raster (V.fromList $ mconcat $ map genRow rows) maxWidth
+        where
+            maxWidth = maximum $ map length rows
+            genRow   = map (\c -> (c, defAttr))
+
+
     toImage (Raster txt w)= foldl1 (<->) rows
         where
             chars = map (\(c, a) -> char a c) $ V.toList txt
