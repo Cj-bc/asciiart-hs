@@ -38,7 +38,29 @@ data Raster = Raster { displayText :: V.Vector (Char, Attr) -- ^ Vector of data
                      , width       :: Int -- ^ Width of the ASCII art
                      }
 
-instance ToImage Raster where
+instance IsAsciiart Raster where
+    fromData rows = Raster (V.fromList $ mconcat parsedRows) maxWidth
+      where
+        parsedRows :: [[(Char, Attr)]]
+        parsedRows  = map parseRow rows
+
+        maxWidth    = maximum $ map length parsedRows
+
+        -- | Parse data format and generate (Char, Attr) pair
+        parseRow :: String -> [(Char, Attr)]
+        parseRow xs  = map createSet (splitAtChar ';' xs)
+
+        createSet :: String -> (Char, Attr)
+        createSet (c:_:attr) = (c, (read attr :: Attr))
+
+        -- | Split string at given Char
+        splitAtChar :: Char -> String -> [String]
+        splitAtChar c (x:[]) | x == c    = [[x]]
+                             | otherwise = []
+        splitAtChar c (x:xs) | x == c    = splitAtChar c xs
+                             | otherwise = let (h:t) = splitAtChar c xs
+                                           in (x : h) : t
+
     toImage (Raster txt w)= foldl1 (<->) rows
         where
             chars = map (\(c, a) -> char a c) $ V.toList txt
