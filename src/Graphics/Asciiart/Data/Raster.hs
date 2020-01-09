@@ -5,7 +5,24 @@ Copyright   : (c) Cj.bc_sd a.k.a Cj-bc, 2020
 Maintainer  : cj.bc-sd@outlook.jp
 Stability   : experimental
 
+Raster Data format is:
 
+@
+Asciiart Raster data
+<Char><separator><Attr>;...
+<Char><separator><Attr>;...
+...
+@
+
+where '<char>' is one character to show and
+'<Attr>' is the attributes to apply (e.g. background color,
+foreground color, bold, italic, etc.)
+'<separator>' is one character.
+It'll just ignored.
+
+No space are allowed around <separator> and ';'.
+If space exists before <separator> or after ';',
+it'll be recognized as '<Char>'
 -}
 module Graphics.Asciiart.Data.Raster
 (
