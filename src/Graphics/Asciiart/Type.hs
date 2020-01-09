@@ -65,3 +65,4 @@ class IsAsciiart a where
     -- | Convert to 'Brick.Types.Widget'
     toWidget :: a -> Widget n
     toWidget = raw . toImage
+    {-# MINIMAL fromData, toData, renderMono, generateFrom, toImage #-}
