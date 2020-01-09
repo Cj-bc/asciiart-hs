@@ -21,7 +21,10 @@ description:         Please see the README on GitHub at <https://github.com/Cj-b
 
 dependencies:
 - base >= 4.7 && < 5
+- vty
+- brick
 - vector
+- split
 
 library:
   source-dirs: src
