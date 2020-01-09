@@ -48,8 +48,8 @@ class IsAsciiart a where
     -- This will generate human-readable output.
     --
     -- To save Asciiart data as is, please use 'toData' instead.
-    -- render :: a -> [String]
-    -- render = undefined
+    render :: a -> [String]
+    render = undefined
 
     -- | Render without attributes
     renderMono :: a -> [String]
