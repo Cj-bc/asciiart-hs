@@ -66,3 +66,31 @@ class IsAsciiart a where
     toWidget :: a -> Widget n
     toWidget = raw . toImage
     {-# MINIMAL fromData, toData, renderMono, generateFrom, toImage #-}
+
+
+
+-- | Scalable objects
+--
+-- Types of this class instance is scalable.
+class Scalable a where
+    -- | scale the shape
+    --
+    -- apply plus value to enlarge.
+    -- apply minus value to shrink.
+    scaleX :: Num amount => amount -> Coord -> a -> a
+    scaleY :: Num amount => amount -> Coord -> a -> a
+    scale :: Num amount => amount -> Coord -> a -> a
+    scale n center = scaleX n center . scaleY n center
+
+
+
+-- | Rotatable objects
+--
+-- Types for this class instance is rotatable
+class Rotatable a where
+    -- | rotate the shape
+    --
+    -- specify with degrees, not radian.
+    --
+    -- 'rotate' should rotate shapes in 
+    rotate :: Num degree => degree -> Coord -> a -> a
