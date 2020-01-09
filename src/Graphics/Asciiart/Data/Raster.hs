@@ -26,7 +26,7 @@ it'll be recognized as '<Char>'
 -}
 module Graphics.Asciiart.Data.Raster
 (
-
+  Raster
 ) where
 import qualified Data.Vector as V
 import Data.List.Split (chunksOf)
