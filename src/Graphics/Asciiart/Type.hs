@@ -11,6 +11,7 @@ module Graphics.Asciiart.Type
 ( -- * Common data types
   Coord
   -- * Classes
+, Scalable(..)
 , IsAsciiart(..)
 ) where
 
