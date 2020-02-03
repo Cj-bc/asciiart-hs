@@ -8,10 +8,17 @@ Stability   : experimental
 Raster Data format is:
 
 @
-Asciiart Raster data
-\<Char>\<separator>\<Attr>;...
-\<Char>\<separator>\<Attr>;...
-...
+exif:
+  title: <title>
+  author: <author>
+  createdAt: YYYY-MM-DDThh:mm:ss<TIMEZONE>
+width: <width>
+data:
+ - c: <char>
+   attr: <Attr>
+ - c: <char>
+   attr: <Attr>
+ ...
 @
 
 where '<char>' is one character to show and
@@ -19,12 +26,10 @@ where '<char>' is one character to show and
 '<Attr>' is the attributes to apply (e.g. background color,
 foreground color, bold, italic, etc.)
 
-'<separator>' is one character.
-It'll just ignored.
+`exif` is optional. Each of child dictionary of `exif` is
+also optional(i.e. only title is allowed)
 
-No space are allowed around <separator> and ';'.
-If space exists before <separator> or after ';',
-it'll be recognized as '<Char>'
+Exif data is still not implemented.
 -}
 module Graphics.Asciiart.Data.Raster
 (
