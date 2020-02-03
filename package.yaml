@@ -25,6 +25,7 @@ dependencies:
 - brick
 - vector
 - split
+- hspec
 - yaml
 - unordered-containers
 - bytestring

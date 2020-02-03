@@ -38,6 +38,7 @@ library
       base >=4.7 && <5
     , brick
     , bytestring
+    , hspec
     , split
     , unordered-containers
     , vector
@@ -57,6 +58,7 @@ executable asciiart-hs-exe
     , base >=4.7 && <5
     , brick
     , bytestring
+    , hspec
     , split
     , unordered-containers
     , vector
@@ -77,6 +79,7 @@ test-suite asciiart-hs-test
     , base >=4.7 && <5
     , brick
     , bytestring
+    , hspec
     , split
     , unordered-containers
     , vector
