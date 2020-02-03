@@ -71,11 +71,7 @@ instance IsAsciiart Raster where
                         (Right a) -> Just a
                         (Left _)  -> Nothing
 
-    toData (Raster txt w) = "Asciiart Raster data" : map encodeRow rows
-      where
-          rows = chunksOf w (V.toList txt)
-          encodeRow = mconcat . map encodePair
-          encodePair (c, attr) = c : ',' : show attr ++ ";"
+    toData = encode
 
     renderMono (Raster txt w) = map (map pickChar) rows
         where
