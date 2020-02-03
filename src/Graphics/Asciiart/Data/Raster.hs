@@ -56,6 +56,16 @@ instance FromJSON Raster where
             parseData = withArray "data" $ \a -> sequence $ V.map parseChar a
             parseChar (Object v) = (,) <$> v .: "c" <*> (read <$> v .: "attr")
 
+
+instance ToJSON Raster where
+    toJSON (Raster txt w) = object ["width" .= w
+                                   , ("data", encTxt txt)
+                                   ]
+        where
+            encTxt :: V.Vector (Char, Attr) -> Value
+            encTxt = toJSON . V.map (\(c, a) -> object ["c" .= c, "attr" .= show a])
+-- }}}
+
 instance IsAsciiart Raster where
     fromData yaml = case decodeEither' yaml of
                         (Right a) -> Just a
