@@ -57,7 +57,7 @@ instance FromJSON Raster where
             parseChar (Object v) = (,) <$> v .: "c" <*> (read <$> v .: "attr")
 
 instance IsAsciiart Raster where
-    fromData rows = case decodeEither' (mconcat rows) of
+    fromData yaml = case decodeEither' yaml of
                         (Right a) -> Just a
                         (Left _)  -> Nothing
 
