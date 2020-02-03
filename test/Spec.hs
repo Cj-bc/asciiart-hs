@@ -1,6 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 import Test.Hspec
 import qualified Data.Vector as V
+import Data.Maybe (isNothing)
 import Data.Either (isRight)
 import Data.ByteString (ByteString, append)
 import Data.Yaml (encode, decodeEither', ParseException)
@@ -70,6 +71,10 @@ main = hspec $ do
                     renderMono testRaster `shouldBe` ["abcdef", "123456"]
 
             describe "fromData" $ do
+                it "should parse correct YAML file safely" $ do
+                    not (isNothing (fromData testRasterData :: Maybe Raster))
+                      `shouldBe` True
+
                 it "should parse Save-file-format and generate Raster" $ do
                     let (Raster original_txt original_w) = testRaster
                         (Raster txt w) = fromData testRasterData
