@@ -31,12 +31,15 @@ also optional(i.e. only title is allowed)
 
 Exif data is still not implemented.
 -}
+{-# LANGUAGE OverloadedStrings #-}
 module Graphics.Asciiart.Data.Raster
 (
   Raster
 ) where
 import qualified Data.Vector as V
+import Data.Yaml
 import Data.List.Split (chunksOf)
+import Data.HashMap.Lazy ((!))
 import Graphics.Vty
 import Graphics.Asciiart.Type
 import Graphics.Asciiart.Data.Raster.Internal
@@ -46,28 +49,17 @@ data Raster = Raster { displayText :: V.Vector (Char, Attr) -- ^ Vector of data
                      , width       :: Int -- ^ Width of the ASCII art
                      }
 
+instance FromJSON Raster where
+    parseJSON (Object v) = Raster <$> parseData (v ! "data")
+                                    <*> v .: "width"
+        where
+            parseData = withArray "data" $ \a -> sequence $ V.map parseChar a
+            parseChar (Object v) = (,) <$> v .: "c" <*> (read <$> v .: "attr")
+
 instance IsAsciiart Raster where
-    fromData rows = Raster (V.fromList $ mconcat parsedRows) maxWidth
-      where
-        parsedRows :: [[(Char, Attr)]]
-        parsedRows  = map parseRow rows
-
-        maxWidth    = maximum $ map length parsedRows
-
-        -- | Parse data format and generate (Char, Attr) pair
-        parseRow :: String -> [(Char, Attr)]
-        parseRow xs  = map createSet (splitAtChar ';' xs)
-
-        createSet :: String -> (Char, Attr)
-        createSet (c:_:attr) = (c, (read attr :: Attr))
-
-        -- | Split string at given Char
-        splitAtChar :: Char -> String -> [String]
-        splitAtChar c (x:[]) | x == c    = [[x]]
-                             | otherwise = []
-        splitAtChar c (x:xs) | x == c    = splitAtChar c xs
-                             | otherwise = let (h:t) = splitAtChar c xs
-                                           in (x : h) : t
+    fromData rows = case decodeEither' (mconcat rows) of
+                        (Right a) -> Just a
+                        (Left _)  -> Nothing
 
     toData (Raster txt w) = "Asciiart Raster data" : map encodeRow rows
       where
