@@ -77,6 +77,6 @@ main = hspec $ do
 
                 it "should parse Save-file-format and generate Raster" $ do
                     let (Raster original_txt original_w) = testRaster
-                        (Raster txt w) = fromData testRasterData
+                        Just (Raster txt w) = fromData testRasterData
                     txt `shouldBe` original_txt
                     w `shouldBe` original_w
