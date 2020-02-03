@@ -8,10 +8,17 @@ Stability   : experimental
 Raster Data format is:
 
 @
-Asciiart Raster data
-\<Char>\<separator>\<Attr>;...
-\<Char>\<separator>\<Attr>;...
-...
+exif:
+  title: <title>
+  author: <author>
+  createdAt: YYYY-MM-DDThh:mm:ss<TIMEZONE>
+width: <width>
+data:
+ - c: <char>
+   attr: <Attr>
+ - c: <char>
+   attr: <Attr>
+ ...
 @
 
 where '<char>' is one character to show and
@@ -19,56 +26,53 @@ where '<char>' is one character to show and
 '<Attr>' is the attributes to apply (e.g. background color,
 foreground color, bold, italic, etc.)
 
-'<separator>' is one character.
-It'll just ignored.
+`exif` is optional. Each of child dictionary of `exif` is
+also optional(i.e. only title is allowed)
 
-No space are allowed around <separator> and ';'.
-If space exists before <separator> or after ';',
-it'll be recognized as '<Char>'
+Exif data is still not implemented.
 -}
+{-# LANGUAGE OverloadedStrings #-}
 module Graphics.Asciiart.Data.Raster
 (
-  Raster
+  Raster(..)
 ) where
-import Control.Arrow
 import qualified Data.Vector as V
+import Data.Yaml
 import Data.List.Split (chunksOf)
+import Data.HashMap.Lazy ((!))
 import Graphics.Vty
 import Graphics.Asciiart.Type
+import Graphics.Asciiart.Data.Raster.Internal
 
 -- | Raster Style Ascii art
 data Raster = Raster { displayText :: V.Vector (Char, Attr) -- ^ Vector of data
                      , width       :: Int -- ^ Width of the ASCII art
                      }
 
+-- FromJSON/ToJSON {{{
+instance FromJSON Raster where
+    parseJSON (Object v) = Raster <$> parseData (v ! "data")
+                                    <*> v .: "width"
+        where
+            parseData = withArray "data" $ \a -> sequence $ V.map parseChar a
+            parseChar (Object v) = (,) <$> v .: "c" <*> (read <$> v .: "attr")
+
+
+instance ToJSON Raster where
+    toJSON (Raster txt w) = object ["width" .= w
+                                   , ("data", encTxt txt)
+                                   ]
+        where
+            encTxt :: V.Vector (Char, Attr) -> Value
+            encTxt = toJSON . V.map (\(c, a) -> object ["c" .= c, "attr" .= show a])
+-- }}}
+
 instance IsAsciiart Raster where
-    fromData rows = Raster (V.fromList $ mconcat parsedRows) maxWidth
-      where
-        parsedRows :: [[(Char, Attr)]]
-        parsedRows  = map parseRow rows
+    fromData yaml = case decodeEither' yaml of
+                        (Right a) -> Just a
+                        (Left _)  -> Nothing
 
-        maxWidth    = maximum $ map length parsedRows
-
-        -- | Parse data format and generate (Char, Attr) pair
-        parseRow :: String -> [(Char, Attr)]
-        parseRow xs  = map createSet (splitAtChar ';' xs)
-
-        createSet :: String -> (Char, Attr)
-        createSet (c:_:attr) = (c, (read attr :: Attr))
-
-        -- | Split string at given Char
-        splitAtChar :: Char -> String -> [String]
-        splitAtChar c (x:[]) | x == c    = [[x]]
-                             | otherwise = []
-        splitAtChar c (x:xs) | x == c    = splitAtChar c xs
-                             | otherwise = let (h:t) = splitAtChar c xs
-                                           in (x : h) : t
-
-    toData (Raster txt w) = "Asciiart Raster data" : map encodeRow rows
-      where
-          rows = chunksOf w (V.toList txt)
-          encodeRow = mconcat . map encodePair
-          encodePair (c, attr) = c : ',' : show attr ++ ";"
+    toData = encode
 
     renderMono (Raster txt w) = map (map pickChar) rows
         where
@@ -96,37 +100,3 @@ instance Scalable Raster where
            oldRows = chunksOf w (V.toList txt)
            newRows = map (addPadding (newWidth - w)) oldRows
 
-
--- Add padding based on scaling
---
--- I use String instead of [(Char, Attr)], for example.
---
--- >> addPadding 5 "_,.-~=\"'\"=~-.._"
--- "_,.-~ = \" ' \" =~-.._"
---
--- >> addPadding 4 "_,.-~=\"'\"=~-.._"
--- "_,.-~= \" ' \" =~-.._"
-addPadding :: Int -> [(Char, Attr)] -> [(Char, Attr)]
-addPadding padAmount original =
-     let _halfLength xs = round $ (toRational $ length xs) / 2
-         splitHalf xs = splitAt (_halfLength xs) xs
-         halfAmountOfPadding = round $ (toRational padAmount) / 2
-
-         -- Insert blank character at one character interval
-         --
-         -- >> addPadFromFront 2 "abcdef"
-         -- "a b cdef"
-         addPadFromFront _ [] = []
-         addPadFromFront i (head':rest)
-             | i < 0     = (head':rest)
-             | otherwise = head' : [(' ', defAttr)] ++ (addPadFromFront (i-1) rest)
-
-         -- Almost the same as 'addPadFromFront', but insert from last
-         --
-         -- >> addPadFromLast 2 "abcdef"
-         -- "abcd e f"
-         addPadFromLast i = reverse . addPadFromFront i . reverse
-         concatTuple (a, b) = a ++ b
-
-     in concatTuple . (addPadFromLast halfAmountOfPadding *** addPadFromFront halfAmountOfPadding)
-             $ splitHalf original

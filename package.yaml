@@ -25,6 +25,10 @@ dependencies:
 - brick
 - vector
 - split
+- hspec
+- yaml
+- unordered-containers
+- bytestring
 
 library:
   source-dirs: src

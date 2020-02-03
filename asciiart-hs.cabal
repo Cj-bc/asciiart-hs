@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 0baa823603d4fddf93251aca6ce6781676f03d8ae626ed799f82ae0af37a860e
+-- hash: a50ac3a0ed79b29ebefcb803e2b043c5d23f708bed00943efbc6bea46596ac5b
 
 name:           asciiart-hs
 version:        0.1.0.0
@@ -28,6 +28,7 @@ source-repository head
 library
   exposed-modules:
       Graphics.Asciiart.Data.Raster
+      Graphics.Asciiart.Data.Raster.Internal
       Graphics.Asciiart.Type
       Lib
   other-modules:
@@ -37,8 +38,13 @@ library
   build-depends:
       base >=4.7 && <5
     , brick
+    , bytestring
+    , hspec
+    , split
+    , unordered-containers
     , vector
     , vty
+    , yaml
   default-language: Haskell2010
 
 executable asciiart-hs-exe
@@ -52,8 +58,13 @@ executable asciiart-hs-exe
       asciiart-hs
     , base >=4.7 && <5
     , brick
+    , bytestring
+    , hspec
+    , split
+    , unordered-containers
     , vector
     , vty
+    , yaml
   default-language: Haskell2010
 
 test-suite asciiart-hs-test
@@ -68,6 +79,11 @@ test-suite asciiart-hs-test
       asciiart-hs
     , base >=4.7 && <5
     , brick
+    , bytestring
+    , hspec
+    , split
+    , unordered-containers
     , vector
     , vty
+    , yaml
   default-language: Haskell2010

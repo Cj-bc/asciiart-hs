@@ -16,6 +16,7 @@ module Graphics.Asciiart.Type
 ) where
 
 -- import Control.Monad.Trans.State
+import Data.ByteString
 import Graphics.Vty.Image (Image)
 import Brick.Types (Widget)
 import Brick.Widgets.Core (raw)
@@ -33,7 +34,7 @@ class IsAsciiart a where
     -- Use 'generateFrom' to generate Asciiart data from Plain text
     --
     -- prop> fromData (toData a) == a
-    fromData :: [String] -> a
+    fromData :: ByteString -> Maybe a
 
     -- | Export to plain text in specific style
     --
@@ -42,7 +43,7 @@ class IsAsciiart a where
     -- (i.e. metadata, Attr values will be saved as is)
     --
     -- Use 'render' to generate human-readable output.
-    toData :: a -> [String]
+    toData :: a -> ByteString
 
     -- | Render to actual letters
     --
