@@ -1,7 +1,9 @@
 {-# LANGUAGE OverloadedStrings #-}
 import Test.Hspec
 import qualified Data.Vector as V
+import Data.Either (isRight)
 import Data.ByteString (ByteString, append)
+import Data.Yaml (encode, decodeEither', ParseException)
 import Graphics.Asciiart.Data.Raster
 import Graphics.Asciiart.Type
 import Graphics.Vty.Attributes
@@ -51,6 +53,16 @@ testRaster = Raster (V.fromList [('a', defAttr), ('b', defAttr), ('c', defAttr)
 main :: IO ()
 main = hspec $ do
     describe "Graphics.Asciiart.Data.Raster" $ do
+        describe "FromJSON" $ do
+            it "should parse correct YAML file safely" $ do
+                isRight (decodeEither' testRasterData :: Either ParseException Raster)
+                    `shouldBe` True
+
+        describe "ToJSON" $ do
+            it "should encode Raster correctly" $ do
+                encode testRaster `shouldBe` testRasterData
+
+
         describe "IsAsciiart instance of Raster" $ do
 
             describe "renderMono" $ do
