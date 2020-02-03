@@ -34,7 +34,7 @@ Exif data is still not implemented.
 {-# LANGUAGE OverloadedStrings #-}
 module Graphics.Asciiart.Data.Raster
 (
-  Raster
+  Raster(..)
 ) where
 import qualified Data.Vector as V
 import Data.Yaml
@@ -49,6 +49,7 @@ data Raster = Raster { displayText :: V.Vector (Char, Attr) -- ^ Vector of data
                      , width       :: Int -- ^ Width of the ASCII art
                      }
 
+-- FromJSON/ToJSON {{{
 instance FromJSON Raster where
     parseJSON (Object v) = Raster <$> parseData (v ! "data")
                                     <*> v .: "width"
