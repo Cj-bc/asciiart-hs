@@ -1,36 +1,41 @@
 {-# LANGUAGE OverloadedStrings #-}
 import Test.Hspec
 import qualified Data.Vector as V
+import Data.ByteString (ByteString, append)
 import Graphics.Asciiart.Data.Raster
 import Graphics.Asciiart.Type
 import Graphics.Vty.Attributes
 
 -- testRasterData {{{
-testRasterData = unlines $ [ "width: 6"
-                           , "data:"
-                           , "  - c: a"
-                           , "    attr: defAttr"
-                           , "  - c: b"
-                           , "    attr: defAttr"
-                           , "  - c: c"
-                           , "    attr: defAttr"
-                           , "  - c: d"
-                           , "    attr: defAttr"
-                           , "  - c: e"
-                           , "    attr: defAttr"
-                           , "  - c: f"
-                           , "    attr: defAttr"
-                           , "  - c: 1"
-                           , "    attr: defAttr"
-                           , "  - c: 2"
-                           , "    attr: defAttr"
-                           , "  - c: 3"
-                           , "    attr: defAttr"
-                           , "  - c: 4"
-                           , "    attr: defAttr"
-                           , "  - c: 5"
-                           , "    attr: defAttr"
-                           , "  - c: 6"
+defAttrTxt = "- attr: Attr {attrStyle = Default, attrForeColor = Default, attrBackColor = Default,\n    attrURL = Default}"
+testRasterData :: ByteString
+testRasterData = mconcat $ map (flip append "\n")
+                         $ [ "data:"
+                           , defAttrTxt
+                           , "  c: a"
+                           , defAttrTxt
+                           , "  c: b"
+                           , defAttrTxt
+                           , "  c: c"
+                           , defAttrTxt
+                           , "  c: d"
+                           , defAttrTxt
+                           , "  c: e"
+                           , defAttrTxt
+                           , "  c: f"
+                           , defAttrTxt
+                           , "  c: '1'"
+                           , defAttrTxt
+                           , "  c: '2'"
+                           , defAttrTxt
+                           , "  c: '3'"
+                           , defAttrTxt
+                           , "  c: '4'"
+                           , defAttrTxt
+                           , "  c: '5'"
+                           , defAttrTxt
+                           , "  c: '6'"
+                           , "width: 6"
                            ]
 -- }}}
 
