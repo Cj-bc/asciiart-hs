@@ -22,7 +22,7 @@ import Brick.Types (Widget)
 import Brick.Widgets.Core (raw)
 
 -- | Represent Coordinate
-type Coord = (Int, Int) -- ^ (x, y)
+type Coord = (Float, Float) -- ^ (x, y)
 
 
 -- | Represent 'a' is ASCII art
