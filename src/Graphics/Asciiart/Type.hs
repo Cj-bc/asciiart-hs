@@ -79,10 +79,10 @@ class Scalable a where
     --
     -- apply plus value to enlarge.
     -- apply minus value to shrink.
-    scaleX :: Real amount => amount -> Coord -> a -> a
-    scaleY :: Real amount => amount -> Coord -> a -> a
-    scale :: Real amount => amount -> Coord -> a -> a
-    scale n center = scaleX n center . scaleY n center
+    scaleX :: Real amount => amount -> a -> a
+    scaleY :: Real amount => amount -> a -> a
+    scale :: Real amount => amount -> a -> a
+    scale n = scaleX n . scaleY n
 
 
 
